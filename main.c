@@ -71,22 +71,421 @@ int gFinish[4][4];   // which pieces are in each player's finish line
 
 // MANDATORY FUNCTIONS ================================================================
 // functions that you must implement -- you can add others if you want
+void RingIntToBoard(int NumberFromRing);
+void seedRandom(int);   // seed the random number generator
+int pop_o_matic();  // "pop" to roll the dice, returns a number between 1 and 6
 
-void initializeBoard();    // set up the board for a new game (see the spec)
+void initializeBoard(){
+    int i;
+    for (i = 0; i < 16; i++) {
+        gPieces[i] = -1;
+    }
+    for (i = 0; i < 28; i++) {
+        gRing[i] = -1;
+    }
+    for (i = 0; i < 4; i++) {
+        gHome[i] = 4;
+    }
+    for (i = 0; i < 4; i++) {
+        int j;
+        for (j = 0; j < 4; j++) {
+            gFinish[i][j] = -1;
+        }
+    }
+}
+   // set up the board for a new game (see the spec)
 
-void printStatus();        // print the current position of each player's pieces (see the spec)
+void printStatus(){
+   int piece = 0;
+   for(int loop = 0; loop < 4; loop++){
+      printf("%7s: ", gPlayerNames[loop]);
+      if(loop == 0){
+      for(piece; piece < 16; piece++){
+      if(piece < 4){
+         if(gPieces[piece] == -1){
+            printf("H");
+            if(piece != 3){
+               printf(",");
+            }
+         }
+         if(gPieces[piece] != -1 && gPieces[piece] < 100){
+            RingIntToBoard(gPieces[piece]);
+         }
+         if(gFinish[0][piece] != -1){
+            printf("RF%d", piece + 1);
+         }
+      }
+      
+   }
+   }
+   if(loop == 1){
+      for(piece; piece < 16; piece++){
+      if(piece < 8 && piece > 3){
+         if(gPieces[piece] == -1){
+            printf("H");
+            if(piece != 7){
+               printf(",");
+            }
+         }
+         if(gPieces[piece] != -1 && gPieces[piece] < 100){
+            RingIntToBoard(gPieces[piece]);
+         }
+         if(gFinish[1][piece - 4] != -1){
+            printf("RF%d", piece - 3);
+         }
+      }
+      
+   }
+   }
+   if(loop == 2){
+      for(piece; piece < 16; piece++){
+      if(piece < 12 && piece > 7){
+         if(gPieces[piece] == -1){
+            printf("H");
+            if(piece != 11){
+               printf(",");
+            }
+         }
+         if(gPieces[piece] != -1 && gPieces[piece] < 100){
+            RingIntToBoard(gPieces[piece]);
+         }
+         if(gFinish[2][piece - 8] != -1){
+            printf("RF%d", piece - 7);
+         }
 
-int playerTurn(int player);   // do everything necessary for this player's turn
+      }
+   
+      
+   }
+   }
+   if(loop == 3){
+      for(piece; piece < 16; piece++){
+      if(piece < 16 && piece > 11){
+         if(gPieces[piece] == -1){
+            printf("H");
+            if(piece != 15){
+               printf(",");
+            }
+         }
+         if(gPieces[piece] != -1 && gPieces[piece] < 100){
+            RingIntToBoard(gPieces[piece]);
+         }
+         if(gFinish[3][piece - 12] != -1){
+            printf("RF%d", piece - 11);
+         }
+      }
+      
+   }
+   }
+
+   if(loop < 4){
+         printf("\n");
+      }
+      piece -=16;
+      piece += 4;
+   }
+
+   }
+   
+    // print the current position of each player's pieces (see the spec)
+
+int playerTurn(int player){
+   int y;
+   y = pop_o_matic();
+   printStatus();
+   printMoves(player, y);
+   return 1;
+}   // do everything necessary for this player's turn
 // return 1 if player wins, otherwise return 0;
 
-int printMoves(int player, int roll);   // print the legal moves for the player
+int printMoves(int player, int roll){
+
+   if(player == 0){
+      int w;
+      int counterred = 0;
+   for(int i = 0; i < 4; i++){
+      if(gPieces[i] != -1 && gPieces[i] < 100 && (gRing[gPieces[i] + roll]) / 4 != 0){
+         RingIntToBoard(gPieces[i]);
+         printf(" to ");
+         RingIntToBoard(gPieces[i] + roll);
+         counterred++;
+      }
+      if(gPieces[i] == -1 && roll == 6 && gRing[4] != 0){
+         printf("H");
+         printf(" to ");
+         RingIntToBoard(4);
+         counterred++;
+         break;
+      }
+      if(gPieces[i] > 100){
+         
+      }
+      if(gPieces[i] + roll > 27){
+         w = gPieces[i] + roll - 28;
+      }
+         if(w > 4 && w < 9 && gPieces[i] < 100){
+            if(w == 5 && gFinish[0][0] == -1){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            printf("RF1");
+            counterred++;
+            }
+            else if(w == 6 && gFinish[0][1] == -1){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            printf("RF2");
+            counterred++;
+            }
+            else if(w == 7 && gFinish[0][2] == -1){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            printf("RF3");
+            counterred++;
+            }
+            else if(w == 8 && gFinish[0][3] == -1){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            printf("RF4");
+            counterred++;
+            }
+         }
+         if(w < 5 && gPieces[i] + roll < 28 && (gRing[gPieces[i] + roll]) / 4 != 0){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            RingIntToBoard(gPieces[i] + roll);
+            counterred++;
+         }
+         
+      
+      }
+      if(counterred == 0){
+         printf("You have no legal moves.");
+      }
+      else return counterred;
+   }
+   if(player == 1){
+      int startmark = 0;
+      int w;
+      int countergreen = 0;
+   for(int i = 4; i < 8; i++){
+      if(gPieces[i] != -1 && gPieces[i] < 100 && (gRing[gPieces[i] + roll]) / 4 != 1){
+         RingIntToBoard(gPieces[i]);
+         printf(" to ");
+         RingIntToBoard(gPieces[i] + roll);
+         if(gPieces[i] > 18){
+            startmark++;
+         }
+         countergreen++;
+      }
+      if(gPieces[i] == -1 && roll == 6 && gRing[11] != 1){
+         printf("H");
+         printf(" to ");
+         RingIntToBoard(11);
+         countergreen++;
+         break;
+      }
+      if(gPieces[i] > 100){
+         
+      }
+      w = gPieces[i] + roll;
+      if(w > 10 && startmark != 0){
+         if(w > 10 && w < 15 && gPieces[i] < 100){
+            if(w == 11 && gFinish[1][0] == -1){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            printf("GF1");
+            countergreen++;
+            }
+            else if(w == 12 && gFinish[1][1] == -1){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            printf("GF2");
+            countergreen++;
+            }
+            else if(w == 13 && gFinish[1][2] == -1){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            printf("GF3");
+            countergreen++;
+            }
+            else if(w == 14 && gFinish[1][3] == -1){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            printf("GF4");
+            countergreen++;
+            }
+         }
+         if(w < 5 && gPieces[i] + roll < 28 && (gRing[gPieces[i] + roll]) / 4 != 1){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            RingIntToBoard(gPieces[i] + roll);
+            countergreen++;
+         }
+         
+      }
+      }
+      if(countergreen == 0){
+         printf("You have no legal moves.");
+      }
+      else return countergreen;
+   }
+   if(player == 2){
+      int startmark = 0;
+      int w;
+      int counteryellow = 0;
+   for(int i = 8; i < 12; i++){
+      if(gPieces[i] != -1 && gPieces[i] < 100 && (gRing[gPieces[i] + roll]) / 4 != 2){
+         RingIntToBoard(gPieces[i]);
+         printf(" to ");
+         RingIntToBoard(gPieces[i] + roll);
+         if(gPieces[i] > 23){
+            startmark++;
+         }
+         counteryellow++;
+      }
+      if(gPieces[i] == -1 && roll == 6 && gRing[18] != 2){
+         printf("H");
+         printf(" to ");
+         RingIntToBoard(18);
+         counteryellow++;
+         break;
+      }
+      if(gPieces[i] > 100){
+         
+      }
+      w = gPieces[i] + roll;
+      if(w > 17 && startmark != 0){
+         if(w > 17 && w < 22 && gPieces[i] < 100){
+            if(w == 18 && gFinish[2][0] == -1){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            printf("YF1");
+            counteryellow++;
+            }
+            else if(w == 19 && gFinish[2][1] == -1){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            printf("YF2");
+            counteryellow++;
+            }
+            else if(w == 20 && gFinish[2][2] == -1){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            printf("YF3");
+            counteryellow++;
+            }
+            else if(w == 21 && gFinish[2][3] == -1){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            printf("YF4");
+            counteryellow++;
+            }
+         }
+         if(w < 12 && gPieces[i] + roll < 28 && (gRing[gPieces[i] + roll]) / 4 != 2){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            RingIntToBoard(gPieces[i] + roll);
+            counteryellow++;
+         }
+         
+      }
+      }
+      if(counteryellow == 0){
+         printf("You have no legal moves.");
+      }
+      else return counteryellow;
+   }
+   if(player == 3){
+      int startmark = 0;
+      int w;
+      int counterblue = 0;
+   for(int i = 12; i < 16; i++){
+      if(gPieces[i] != -1 && gPieces[i] < 100 && (gRing[gPieces[i] + roll]) / 4 != 3){
+         RingIntToBoard(gPieces[i]);
+         printf(" to ");
+         RingIntToBoard(gPieces[i] + roll);
+         if(gPieces[i] > 28){
+            startmark++;
+         }
+         counterblue++;
+      }
+      if(gPieces[i] == -1 && roll == 6 && gRing[25] != 3){
+         printf("H");
+         printf(" to ");
+         RingIntToBoard(25);
+         counterblue++;
+         break;
+      }
+      if(gPieces[i] > 100){
+         
+      }
+      w = gPieces[i] + roll;
+      if(w > 24 && startmark != 0){
+         if(w > 24 && w < 29 && gPieces[i] < 100){
+            if(w == 25 && gFinish[3][0] == -1){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            printf("BF1");
+            counterblue++;
+            }
+            else if(w == 26 && gFinish[3][1] == -1){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            printf("BF2");
+            counterblue++;
+            }
+            else if(w == 27 && gFinish[3][2] == -1){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            printf("BF3");
+            counterblue++;
+            }
+            else if(w == 28 && gFinish[3][3] == -1){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            printf("BF4");
+            counterblue++;
+            }
+         }
+         if(w < 18 && gPieces[i] + roll < 28 && (gRing[gPieces[i] + roll]) / 4 != 3){
+            RingIntToBoard(gPieces[i]);
+            printf(" to ");
+            RingIntToBoard(gPieces[i] + roll);
+            counterblue++;
+         }
+         
+      }
+      }
+      if(counterblue == 0){
+         printf("You have no legal moves.");
+}
+   }
+}
+
+
+  // print the legal moves for the player
 // return the number of legal moves
 
-int movePiece(int player, int from, int spaces);    // move a piece forward
+int movePiece(int player, int from, int spaces){
+
+}    // move a piece forward
 // player is requesting a move from a specified place on the board
 // return 1 if the move is legal, 0 otherwise
 
-int checkWin(int player);   // check if the player has won the game
+int checkWin(int player){
+   if(player == 0 && gPieces[0] == 100 && gPieces[1] == 101 && gPieces[2] == 102 && gPieces[3] == 103){
+      return 1;
+   } else return 0;
+   if(player == 1 && gPieces[4] == 110 && gPieces[5] == 111 && gPieces[6] == 112 && gPieces[7] == 113){
+      return 1;
+   } else return 0;
+   if(player == 2 && gPieces[8] == 120 && gPieces[9] == 121 && gPieces[10] == 122 && gPieces[11] == 123){
+      return 1;
+   } else return 0;
+   if(player == 3 && gPieces[12] == 130 && gPieces[13] == 131 && gPieces[14] == 132 && gPieces[15] == 133){
+      return 1;
+   } else return 0;
+}   // check if the player has won the game
 
 // OPTIONAL FUNCTIONS =================================================================
 // Please declare all functions that you have created for this program. Do not define
@@ -134,33 +533,36 @@ int main() {
    int player = Red;     // we'll start with Red
    int gameOver = 0;
 
+
    while (!gameOver) {
       // perform this player's turn
       gameOver = playerTurn(player);
       if (numPlayers == 2) player = (player + 2) % 4;
       else player = (player + 1) % numPlayers;
    }
+   
    return 0;
 }
 #endif  // TEST_MAIN: DO NOT REMOVE this line -- it is needed for grading purposes.
 
 // FUNCTION DEFINITIONS ===============================================================
 // Please put your function definitions here. Do not put a main() function here.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void RingIntToBoard(int NumberFromRing) {
+         if(NumberFromRing > 27){
+            NumberFromRing -= 28;
+         }
+        int colors = NumberFromRing / 7;
+        int position = (NumberFromRing % 7) + 1;
+        if (colors == 0) {
+            printf("R%d", position);
+        } else if (colors == 1) {
+            printf("G%d", position);
+        } else if (colors == 2) {
+            printf("Y%d", position);
+        } else if (colors == 3) {
+            printf("B%d", position);
+        }
+    }
 
 
 //-----------------------------------------------------------------------------------------
