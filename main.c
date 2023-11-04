@@ -189,15 +189,6 @@ void printStatus(){
    
     // print the current position of each player's pieces (see the spec)
 
-int playerTurn(int player){
-   int y;
-   y = pop_o_matic();
-   printStatus();
-   printMoves(player, y);
-   return 1;
-}   // do everything necessary for this player's turn
-// return 1 if player wins, otherwise return 0;
-
 int printMoves(int player, int roll){
 
    if(player == 0){
@@ -486,7 +477,14 @@ int checkWin(int player){
       return 1;
    } else return 0;
 }   // check if the player has won the game
-
+int playerTurn(int player){
+   int y;
+   y = pop_o_matic();
+   printStatus();
+   printMoves(player, y);
+   return 1;
+}   // do everything necessary for this player's turn
+// return 1 if player wins, otherwise return 0;
 // OPTIONAL FUNCTIONS =================================================================
 // Please declare all functions that you have created for this program. Do not define
 // them here. Put the code **after** the main() function, in the designated area.
